@@ -24,6 +24,7 @@ fun HomeAppBarActions(
     query: String,
     isSearchBarActive: Boolean,
     onSearchIconClicked: () -> Unit,
+    onQueryCleared:() -> Unit,
     onQueryChanged: (String) -> Unit,
     navigateToFavorite: () -> Unit
 ) {
@@ -34,12 +35,9 @@ fun HomeAppBarActions(
                 .padding(horizontal = 8.dp),
             query = query,
             placeholder = stringResource(id = R.string.search_by_name),
-            onQueryChange = {
-                onQueryChanged(it)
-            },
-            onCancelSearch = {
-                onSearchIconClicked()
-            }
+            onQueryChange = onQueryChanged,
+            onQueryCleared = onQueryCleared,
+            onDoneClicked = onSearchIconClicked
         )
     }
     if (!isSearchBarActive) {

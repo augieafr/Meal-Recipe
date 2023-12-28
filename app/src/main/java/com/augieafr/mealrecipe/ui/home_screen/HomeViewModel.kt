@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.augieafr.mealrecipe.data.repository.MealRepository
 import com.augieafr.mealrecipe.data.utils.MealException
 import com.augieafr.mealrecipe.data.utils.ResultState
+import com.augieafr.mealrecipe.ui.model.MealUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +25,7 @@ class HomeViewModel @Inject constructor(private val mealRepository: MealReposito
     val searchQuery: StateFlow<String>
         get() = _searchQuery
 
-    private val _selectedArea = MutableStateFlow("Indonesia")
+    private val _selectedArea = MutableStateFlow("American")
     val selectedArea: StateFlow<String>
         get() = _selectedArea
 
@@ -44,27 +45,22 @@ class HomeViewModel @Inject constructor(private val mealRepository: MealReposito
             area = _selectedArea.value,
             category = selectedCategory.value
         ).collectLatest {
-            when (it) {
-                is ResultState.Error -> {
-                    _uiState.value =
-                        if (it.throwable is MealException.EmptyResultException) HomeScreenUiState.Empty
-                        else HomeScreenUiState.Error(it.throwable.message.toString())
-                }
-
-                is ResultState.Loading -> _uiState.value = HomeScreenUiState.Loading
-                is ResultState.Success -> _uiState.value = HomeScreenUiState.MainContent(it.data)
-            }
+            it.setHomeScreenState()
         }
     }
 
-    fun searchMeal() {
-        // TODO: IN PROGRESS
+    fun searchMeal() = viewModelScope.launch {
+        mealRepository.searchMealByName(_searchQuery.value).collectLatest {
+            it.setHomeScreenState()
+        }
     }
 
     private fun getCategories() = viewModelScope.launch {
         mealRepository.getCategories().collectLatest { result ->
             when (result) {
-                is ResultState.Error -> _uiState.value = HomeScreenUiState.Error(result.throwable.message.toString())
+                is ResultState.Error -> _uiState.value =
+                    HomeScreenUiState.Error(result.throwable.message.toString())
+
                 is ResultState.Loading -> {}
                 is ResultState.Success -> _categories.value = result.data
             }
@@ -76,7 +72,19 @@ class HomeViewModel @Inject constructor(private val mealRepository: MealReposito
         _selectedCategory.value = category
     }
 
-    fun setQuery(query: String) {
+    fun setQuery(query: String) = viewModelScope.launch {
+        if (query == _searchQuery.value) return@launch
         _searchQuery.value = query
+    }
+
+    private fun ResultState<List<MealUiModel>>.setHomeScreenState() {
+        when (this) {
+            is ResultState.Error -> _uiState.value =
+                if (this.throwable is MealException.EmptyResultException) HomeScreenUiState.Empty
+                else HomeScreenUiState.Error(this.throwable.message.toString())
+
+            is ResultState.Loading -> _uiState.value = HomeScreenUiState.Loading
+            is ResultState.Success -> _uiState.value = HomeScreenUiState.MainContent(this.data)
+        }
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,6 +29,7 @@ import com.augieafr.mealrecipe.ui.component.meal_app_bar.MealAppBar
 import com.augieafr.mealrecipe.ui.empty_screen.EmptyScreen
 import com.augieafr.mealrecipe.ui.error_screen.ErrorScreen
 import com.augieafr.mealrecipe.ui.loading_screen.LoadingScreen
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
@@ -54,6 +56,8 @@ fun HomeScreen(
         if (searchQuery.isEmpty()) {
             viewModel.getFilteredMeal()
         } else {
+            // don't search immediately, wait for user to finish typing
+            delay(300)
             viewModel.searchMeal()
         }
     }
@@ -63,24 +67,32 @@ fun HomeScreen(
         topBar = {
             MealAppBar(title = {
                 Row(
-                    modifier = Modifier.clickable { isShowFilterDialog = true },
+                    modifier = Modifier.clickable {
+                        if (searchQuery.isEmpty()) isShowFilterDialog = true
+                    },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "$selectedArea $selectedCategory")
-                    Spacer(modifier = Modifier.size(4.dp))
-                    Icon(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .padding(top = 4.dp),
-                        painter = painterResource(id = R.drawable.baseline_filter_list_24),
-                        contentDescription = ""
-                    )
+                    if (searchQuery.isEmpty()) {
+                        Text(text = "$selectedArea $selectedCategory")
+                        Spacer(modifier = Modifier.size(4.dp))
+                        Icon(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(top = 4.dp),
+                            painter = painterResource(id = R.drawable.baseline_filter_list_24),
+                            contentDescription = ""
+                        )
+                    } else Text(text = stringResource(id = R.string.search_result))
+
                 }
             }) {
                 HomeAppBarActions(
                     query = searchQuery,
                     isSearchBarActive = isSearchBarActive,
-                    onSearchIconClicked = { isSearchBarActive = !isSearchBarActive },
+                    onSearchIconClicked = {
+                        isSearchBarActive = !isSearchBarActive
+                    },
+                    onQueryCleared = { viewModel.setQuery("") },
                     onQueryChanged = { viewModel.setQuery(it) },
                     navigateToFavorite = navigateToFavorite
                 )

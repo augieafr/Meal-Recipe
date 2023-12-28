@@ -42,6 +42,20 @@ class MealRepository @Inject constructor(
         }
     }
 
+    fun searchMealByName(query: String) = executeRequest { flowCollector ->
+        val result = apiService.searchMeal(query)
+        if (result.isSuccessful) {
+            result.body()?.let { response ->
+                if (response.meals.isNullOrEmpty()) flowCollector.emit(
+                    ResultState.Error(
+                        MealException.EmptyResultException
+                    )
+                )
+                else flowCollector.emit(ResultState.Success(response.meals.map { it.toUiModel() }))
+            }
+        }
+    }
+
     private inline fun <T> executeRequest(
         crossinline action: suspend (FlowCollector<ResultState<T>>) -> Unit
     ) =

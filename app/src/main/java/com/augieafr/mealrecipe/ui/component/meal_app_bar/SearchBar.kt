@@ -1,10 +1,13 @@
 package com.augieafr.mealrecipe.ui.component.meal_app_bar
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,6 +18,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -29,44 +33,58 @@ fun SearchBar(
     query: String,
     placeholder: String,
     onQueryChange: (String) -> Unit,
-    onCancelSearch: () -> Unit
+    onQueryCleared: () -> Unit,
+    onDoneClicked: () -> Unit
 ) {
     val focusRequester = FocusRequester()
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
-    TextField(
-        modifier = modifier
-            .focusRequester(focusRequester),
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
-        ),
-        value = query,
-        placeholder = {
-            Text(
-                text = placeholder,
-            )
-        },
-        onValueChange = { onQueryChange(it) },
-        shape = SearchBarDefaults.inputFieldShape,
-        singleLine = true,
-        trailingIcon = {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        TextField(
+            modifier = modifier
+                .weight(0.9f)
+                .focusRequester(focusRequester),
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
+            value = query,
+            placeholder = {
+                Text(
+                    text = placeholder,
+                )
+            },
+            onValueChange = { onQueryChange(it) },
+            shape = SearchBarDefaults.inputFieldShape,
+            singleLine = true,
+            trailingIcon = {
+                Icon(
+                    modifier = Modifier.clickable { onDoneClicked() },
+                    imageVector = Icons.Filled.Done,
+                    contentDescription = "Done",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { onDoneClicked() })
+        )
+        AnimatedVisibility(visible = query.isNotEmpty()) {
             Icon(
-                modifier = Modifier.clickable { onCancelSearch() },
-                imageVector = Icons.Filled.Done,
-                contentDescription = "Close",
+                modifier = Modifier
+                    .clickable { onQueryCleared() },
+                imageVector = Icons.Filled.Clear,
+                contentDescription = "Clear search",
                 tint = MaterialTheme.colorScheme.onSurface
             )
-        },
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { onCancelSearch() })
-    )
+        }
+    }
+
 }
 
 @Preview
 @Composable
 fun SearchBarPreview() {
-    SearchBar(Modifier.fillMaxWidth(), "", "", {}, {})
+    SearchBar(Modifier.fillMaxWidth(), "", "", {}, {}, {})
 }

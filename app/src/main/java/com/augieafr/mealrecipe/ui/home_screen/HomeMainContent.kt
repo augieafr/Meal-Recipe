@@ -1,8 +1,8 @@
 package com.augieafr.mealrecipe.ui.home_screen
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,12 +15,14 @@ fun HomeMainContent(
     mealList: List<MealUiModel>,
     onItemClicked: (String) -> Unit
 ) {
-    LazyVerticalGrid(modifier = modifier, columns = GridCells.Fixed(2)) {
-        items(count = mealList.size) { index ->
+    LazyVerticalStaggeredGrid(modifier = modifier, columns = StaggeredGridCells.Fixed(2)) {
+        items(count = mealList.size, key = {
+            mealList[it].id
+        }) { index ->
             with(mealList[index]) {
                 MealItem(
                     modifier = Modifier.padding(8.dp),
-                    title = title,
+                    title = name,
                     thumbUrl = thumbUrl,
                     onClick = { onItemClicked(id) }
                 )

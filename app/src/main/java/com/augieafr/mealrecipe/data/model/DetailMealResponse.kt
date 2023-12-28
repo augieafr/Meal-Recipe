@@ -1,0 +1,102 @@
+package com.augieafr.mealrecipe.data.model
+
+import com.google.gson.annotations.SerializedName
+
+data class DetailMealResponse(
+
+    @field:SerializedName("meals")
+    val meals: List<DetailMealsItem>? = null
+)
+
+data class DetailMealsItem(
+
+    @field:SerializedName("strImageSource")
+    val strImageSource: String? = null,
+
+    @field:SerializedName("strIngredient10")
+    val strIngredient10: String? = null,
+
+    @field:SerializedName("strIngredient12")
+    val strIngredient12: String? = null,
+
+    @field:SerializedName("strIngredient11")
+    val strIngredient11: String? = null,
+
+    @field:SerializedName("strIngredient14")
+    val strIngredient14: String? = null,
+
+    @field:SerializedName("strCategory")
+    val strCategory: String? = null,
+
+    @field:SerializedName("strIngredient13")
+    val strIngredient13: String? = null,
+
+    @field:SerializedName("strIngredient16")
+    val strIngredient16: String? = null,
+
+    @field:SerializedName("strIngredient15")
+    val strIngredient15: String? = null,
+
+    @field:SerializedName("strIngredient18")
+    val strIngredient18: String? = null,
+
+    @field:SerializedName("strIngredient17")
+    val strIngredient17: String? = null,
+
+    @field:SerializedName("strArea")
+    val strArea: String,
+
+    @field:SerializedName("strIngredient19")
+    val strIngredient19: Any? = null,
+
+    @field:SerializedName("strTags")
+    val strTags: String? = null,
+
+    @field:SerializedName("idMeal")
+    val idMeal: String,
+
+    @field:SerializedName("strInstructions")
+    val strInstructions: String? = null,
+
+    @field:SerializedName("strIngredient1")
+    val strIngredient1: String? = null,
+
+    @field:SerializedName("strIngredient3")
+    val strIngredient3: String? = null,
+
+    @field:SerializedName("strIngredient2")
+    val strIngredient2: String? = null,
+
+    @field:SerializedName("strIngredient20")
+    val strIngredient20: String? = null,
+
+    @field:SerializedName("strIngredient5")
+    val strIngredient5: String? = null,
+
+    @field:SerializedName("strIngredient4")
+    val strIngredient4: String? = null,
+
+    @field:SerializedName("strIngredient7")
+    val strIngredient7: String? = null,
+
+    @field:SerializedName("strIngredient6")
+    val strIngredient6: String? = null,
+
+    @field:SerializedName("strIngredient9")
+    val strIngredient9: String? = null,
+
+    @field:SerializedName("strIngredient8")
+    val strIngredient8: String? = null,
+
+    @field:SerializedName("strMealThumb")
+    val strMealThumb: String? = null,
+
+    @field:SerializedName("strMeal")
+    val strMeal: String,
+
+    @field:SerializedName("strMeasure20")
+    val strMeasure20: String? = null,
+
+    @field:SerializedName("strYoutube")
+    val strYoutube: String? = null,
+)

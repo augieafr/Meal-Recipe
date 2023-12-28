@@ -8,4 +8,6 @@
     <string name="save">Save</string>
     <string name="filter_meal">Filter Meal</string>
     <string name="cd_close">Close</string>
+    <string name="search_by_name">Search by meal\'s name</string>
+    <string name="search_result">Search result</string>
 </resources>

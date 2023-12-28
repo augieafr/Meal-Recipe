@@ -33,7 +33,7 @@ fun HomeAppBarActions(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
             query = query,
-            placeholder = "Search by title",
+            placeholder = stringResource(id = R.string.search_by_name),
             onQueryChange = {
                 onQueryChanged(it)
             },

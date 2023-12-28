@@ -64,14 +64,9 @@ class HomeViewModel @Inject constructor(private val mealRepository: MealReposito
     private fun getCategories() = viewModelScope.launch {
         mealRepository.getCategories().collectLatest { result ->
             when (result) {
-                is ResultState.Error -> {
-                    _uiState.value = HomeScreenUiState.Error(result.throwable.message.toString())
-                }
-
+                is ResultState.Error -> _uiState.value = HomeScreenUiState.Error(result.throwable.message.toString())
                 is ResultState.Loading -> {}
-                is ResultState.Success -> {
-                    _categories.value = result.data
-                }
+                is ResultState.Success -> _categories.value = result.data
             }
         }
     }
@@ -79,5 +74,9 @@ class HomeViewModel @Inject constructor(private val mealRepository: MealReposito
     fun setFilter(area: String, category: String) {
         _selectedArea.value = area
         _selectedCategory.value = category
+    }
+
+    fun setQuery(query: String) {
+        _searchQuery.value = query
     }
 }

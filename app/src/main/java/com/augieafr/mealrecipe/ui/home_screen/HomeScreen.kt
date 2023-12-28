@@ -78,10 +78,10 @@ fun HomeScreen(
                 }
             }) {
                 HomeAppBarActions(
-                    query = "",
+                    query = searchQuery,
                     isSearchBarActive = isSearchBarActive,
                     onSearchIconClicked = { isSearchBarActive = !isSearchBarActive },
-                    onQueryChanged = { /*TODO*/ },
+                    onQueryChanged = { viewModel.setQuery(it) },
                     navigateToFavorite = navigateToFavorite
                 )
             }

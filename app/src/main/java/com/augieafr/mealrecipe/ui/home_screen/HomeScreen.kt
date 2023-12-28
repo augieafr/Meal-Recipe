@@ -1,5 +1,6 @@
 package com.augieafr.mealrecipe.ui.home_screen
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,7 +13,9 @@ import androidx.compose.ui.res.stringResource
 import com.augieafr.mealrecipe.R
 import com.augieafr.mealrecipe.ui.component.meal_app_bar.HomeAppBarActions
 import com.augieafr.mealrecipe.ui.component.meal_app_bar.MealAppBar
-import com.augieafr.mealrecipe.ui.model.MealUiModel
+import com.augieafr.mealrecipe.ui.empty_screen.EmptyScreen
+import com.augieafr.mealrecipe.ui.error_screen.ErrorScreen
+import com.augieafr.mealrecipe.ui.loading_screen.LoadingScreen
 
 @Composable
 fun HomeScreen(
@@ -24,10 +27,16 @@ fun HomeScreen(
         mutableStateOf(false)
     }
 
+    val uiState: HomeScreenUiState by remember {
+        mutableStateOf(
+            HomeScreenUiState.Empty
+        )
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
-            MealAppBar(title= stringResource(id = R.string.app_name)) {
+            MealAppBar(title = stringResource(id = R.string.app_name)) {
                 HomeAppBarActions(
                     query = "",
                     isSearchBarActive = isSearchBarActive,
@@ -38,27 +47,21 @@ fun HomeScreen(
             }
         }
     ) { paddingValues ->
-        HomeMainContent(
-            modifier = Modifier.padding(paddingValues),
-            mealList = listOf(
-                MealUiModel(
-                    id = "52772",
-                    title = "Teriyaki Chicken Casserole",
-                    thumbUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
-                ),
-                MealUiModel(
-                    id = "52772",
-                    title = "Teriyaki Chicken Casserole ",
-                    thumbUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
-                ),
-                MealUiModel(
-                    id = "52772",
-                    title = "Teriyaki Chicken Casserole",
-                    thumbUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
-                )
-            )
-        ) { id ->
-            navigateToDetail(id)
+        val screenModifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+        when (uiState) {
+            HomeScreenUiState.Empty -> EmptyScreen(modifier = screenModifier)
+            is HomeScreenUiState.Error -> ErrorScreen(modifier = screenModifier)
+            HomeScreenUiState.Loading -> LoadingScreen(modifier = screenModifier)
+            is HomeScreenUiState.MainContent -> {
+                HomeMainContent(
+                    modifier = screenModifier,
+                    mealList = (uiState as HomeScreenUiState.MainContent).data
+                ) { id ->
+                    navigateToDetail(id)
+                }
+            }
         }
     }
 

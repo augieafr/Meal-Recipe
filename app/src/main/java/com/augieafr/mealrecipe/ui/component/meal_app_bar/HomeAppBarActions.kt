@@ -26,7 +26,7 @@ fun HomeAppBarActions(
     onSearchIconClicked: () -> Unit,
     onQueryCleared:() -> Unit,
     onQueryChanged: (String) -> Unit,
-    navigateToFavorite: () -> Unit
+    navigateToBookmark: () -> Unit
 ) {
     AnimatedVisibility(enter = fadeIn(), exit = fadeOut(), visible = isSearchBarActive) {
         SearchBar(
@@ -51,9 +51,9 @@ fun HomeAppBarActions(
         Spacer(modifier = Modifier.size(8.dp))
         Icon(
             modifier = Modifier
-                .clickable { navigateToFavorite() },
+                .clickable { navigateToBookmark() },
             imageVector = Icons.Filled.Favorite,
-            contentDescription = stringResource(id = R.string.cd_favorite),
+            contentDescription = stringResource(id = R.string.cd_bookmark),
             tint = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.size(16.dp))

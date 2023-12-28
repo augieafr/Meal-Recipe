@@ -1,7 +1,8 @@
 package com.augieafr.mealrecipe.data.utils
 
-import com.augieafr.mealrecipe.data.model.DetailMealsItem
-import com.augieafr.mealrecipe.data.model.MealsItem
+import com.augieafr.mealrecipe.data.model.entity.BookmarkEntity
+import com.augieafr.mealrecipe.data.model.response.DetailMealsItem
+import com.augieafr.mealrecipe.data.model.response.MealsItem
 import com.augieafr.mealrecipe.ui.model.DetailMealUiModel
 import com.augieafr.mealrecipe.ui.model.MealUiModel
 import kotlin.reflect.full.memberProperties
@@ -56,3 +57,15 @@ fun DetailMealsItem.toDetailUiModel(): DetailMealUiModel {
         tag = this.strTags.orEmpty()
     )
 }
+
+fun DetailMealUiModel.toBookmarkEntity() = BookmarkEntity(
+    id = this.id,
+    name = this.name,
+    thumbUrl = this.thumbUrl
+)
+
+fun BookmarkEntity.toMealUiModel() = MealUiModel(
+    id = this.id,
+    name = this.name,
+    thumbUrl = this.thumbUrl
+)

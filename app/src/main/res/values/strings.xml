@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Meal Recipe</string>
     <string name="cd_meal_image">Meal Image</string>
-    <string name="cd_favorite">Go to favorite screen</string>
+    <string name="cd_bookmark">Go to bookmark screen</string>
     <string name="cd_search_meal">Search meal</string>
     <string name="cd_empty_screen_artwork">Artwork data not found</string>
     <string name="empty_screen_text">No meal recipe found!</string>
@@ -10,7 +10,9 @@
     <string name="cd_close">Close</string>
     <string name="search_by_name">Search by meal\'s name</string>
     <string name="search_result">Search result</string>
-    <string name="detail_meal">Detail meal</string>
+    <string name="detail_meal">Detail Meal</string>
     <string name="ingredient">Ingredients :</string>
     <string name="instructions">Instructions:</string>
+    <string name="no_bookmarked_meal">You have no bookmarked meal yet, let\'s bookmark one first!</string>
+    <string name="bookmarked_meal">Bookmarked Meal</string>
 </resources>

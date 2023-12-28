@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -28,31 +29,32 @@ fun DetailMealScreen(
 ) {
     LaunchedEffect(Unit) {
         viewModel.getDetailMealById(mealId)
+        viewModel.isBookmarked(mealId)
     }
 
-    Scaffold(
-        modifier,
-        topBar = {
-            MealAppBar(
-                title = {
-                    Text(text = stringResource(id = R.string.detail_meal))
-                },
-                onNavigationUp = onNavigateUp
+    Scaffold(modifier, topBar = {
+        MealAppBar(
+            title = {
+                Text(text = stringResource(id = R.string.detail_meal))
+            }, onNavigationUp = onNavigateUp
+        )
+    }, floatingActionButton = {
+        FloatingActionButton(onClick = { viewModel.toggleBookmark() }) {
+            Icon(
+                imageVector = if (viewModel.isBookmarked.collectAsStateWithLifecycle().value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                contentDescription = "Bookmark"
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.Favorite, contentDescription = "Bookmark")
-            }
         }
-    ) { paddingValues ->
+    }) { paddingValues ->
         val screenModifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
-        when(val result = viewModel.uiState.collectAsStateWithLifecycle().value) {
+        when (val result = viewModel.uiState.collectAsStateWithLifecycle().value) {
             is DetailScreenUiState.Error -> ErrorScreen(modifier = screenModifier)
             DetailScreenUiState.Loading -> LoadingScreen(modifier = screenModifier)
-            is DetailScreenUiState.MainContent -> DetailScreenMainContent(modifier = screenModifier, result.data)
+            is DetailScreenUiState.MainContent -> DetailScreenMainContent(
+                modifier = screenModifier, result.data
+            )
         }
     }
 }

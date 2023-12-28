@@ -11,11 +11,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel @Inject constructor(val repository: MealRepository) : ViewModel() {
+class DetailViewModel @Inject constructor(private val repository: MealRepository) : ViewModel() {
     private val _uiState: MutableStateFlow<DetailScreenUiState> =
         MutableStateFlow(DetailScreenUiState.Loading)
     val uiState: StateFlow<DetailScreenUiState>
         get() = _uiState
+
+    private val _isBookmarked: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isBookmarked: StateFlow<Boolean>
+        get() = _isBookmarked
 
     fun getDetailMealById(id: String) = viewModelScope.launch {
         repository.getDetailMealById(id).collect { result ->
@@ -34,5 +38,21 @@ class DetailViewModel @Inject constructor(val repository: MealRepository) : View
                 }
             }
         }
+    }
+
+    fun isBookmarked(id: String) = viewModelScope.launch {
+        _isBookmarked.value = repository.isBookmarked(id)
+    }
+
+    fun toggleBookmark() = viewModelScope.launch {
+        // bookmark icon only appear if success get detail data, so it's fine to cast here
+        val detailMealUiModel = (_uiState.value as DetailScreenUiState.MainContent).data
+
+        if (_isBookmarked.value) {
+            repository.unBookmarkMeal(detailMealUiModel)
+        } else {
+            repository.bookmarkMeal(detailMealUiModel)
+        }
+        _isBookmarked.value = !_isBookmarked.value
     }
 }

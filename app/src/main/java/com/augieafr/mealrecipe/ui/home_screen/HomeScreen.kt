@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.augieafr.mealrecipe.R
+import com.augieafr.mealrecipe.ui.component.ListMeal
 import com.augieafr.mealrecipe.ui.component.filter_dialog.FilterDialog
 import com.augieafr.mealrecipe.ui.component.meal_app_bar.HomeAppBarActions
 import com.augieafr.mealrecipe.ui.component.meal_app_bar.MealAppBar
@@ -36,7 +37,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     navigateToDetail: (String) -> Unit,
-    navigateToFavorite: () -> Unit,
+    navigateToBookmark: () -> Unit,
 ) {
     var isSearchBarActive by remember {
         mutableStateOf(false)
@@ -103,9 +104,9 @@ fun HomeScreen(
                         },
                         onQueryCleared = { viewModel.setQuery("") },
                         onQueryChanged = { viewModel.setQuery(it) },
-                        navigateToFavorite = {
+                        navigateToBookmark = {
                             viewModel.isScreenRemovedFromComposition = true
-                            navigateToFavorite()
+                            navigateToBookmark()
                         }
                     )
                 }
@@ -130,7 +131,7 @@ fun HomeScreen(
             is HomeScreenUiState.Error -> ErrorScreen(modifier = screenModifier)
             HomeScreenUiState.Loading -> LoadingScreen(modifier = screenModifier)
             is HomeScreenUiState.MainContent -> {
-                HomeMainContent(
+                ListMeal(
                     modifier = screenModifier,
                     mealList = (uiState as HomeScreenUiState.MainContent).data
                 ) { id ->

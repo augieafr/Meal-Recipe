@@ -1,12 +1,17 @@
 package com.augieafr.mealrecipe.data.di
 
+import android.content.Context
+import androidx.room.Room
 import com.augieafr.mealrecipe.BuildConfig
+import com.augieafr.mealrecipe.data.local.MealDao
+import com.augieafr.mealrecipe.data.local.MealDatabase
 import com.augieafr.mealrecipe.data.network.ApiService
 import com.augieafr.mealrecipe.data.repository.MealRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -46,11 +51,28 @@ class NetworkModule {
 }
 
 @Module
+@InstallIn(SingletonComponent::class)
+class DatabaseModule {
+    @Provides
+    @Singleton
+    fun provideMealDatabase(@ApplicationContext appContext: Context) =
+        Room.databaseBuilder(appContext, MealDatabase::class.java, "meal_db")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideMealDao(mealDatabase: MealDatabase): MealDao {
+        return mealDatabase.todoDao()
+    }
+}
+
+@Module
 @InstallIn(ViewModelComponent::class)
 class RepositoryModule {
-    
+
     @Provides
-    fun provideMealRepository(apiService: ApiService): MealRepository {
-        return MealRepository(apiService)
+    fun provideMealRepository(apiService: ApiService, mealDao: MealDao): MealRepository {
+        return MealRepository(apiService, mealDao)
     }
 }

@@ -6,6 +6,8 @@ sealed class Screen(val route: String) {
         fun createRoute(mealId: String) = "home/$mealId"
     }
 
+    data object Bookmark : Screen("home/bookmark")
+
     companion object {
         const val DETAIL_MEAL_ID_KEY = "meal_id"
     }

@@ -1,8 +1,10 @@
 package com.augieafr.mealrecipe.data.repository
 
+import android.util.Log
 import com.augieafr.mealrecipe.data.network.ApiService
 import com.augieafr.mealrecipe.data.utils.MealException
 import com.augieafr.mealrecipe.data.utils.ResultState
+import com.augieafr.mealrecipe.data.utils.toDetailUiModel
 import com.augieafr.mealrecipe.data.utils.toUiModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
@@ -56,6 +58,20 @@ class MealRepository @Inject constructor(
         }
     }
 
+    fun getDetailMealById(id: String) = executeRequest { flowCollector ->
+        val result = apiService.detailMeal(id)
+        if (result.isSuccessful) {
+            result.body()?.let { response ->
+                if (response.meals.isNullOrEmpty()) flowCollector.emit(
+                    // not possible to get empty result, but just in case
+                    ResultState.Error(
+                        MealException.UnknownException
+                    )
+                )
+                else flowCollector.emit(ResultState.Success(response.meals[0].toDetailUiModel()))
+            }
+        }
+    }
     private inline fun <T> executeRequest(
         crossinline action: suspend (FlowCollector<ResultState<T>>) -> Unit
     ) =
@@ -64,5 +80,6 @@ class MealRepository @Inject constructor(
             action(this)
         }.catch {
             emit(ResultState.Error(MealException.UnknownException))
+            Log.e("MealRepository", it.message.toString())
         }.flowOn(Dispatchers.IO)
 }

@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import com.augieafr.mealrecipe.ui.home_screen.HomeScreen
 import com.augieafr.mealrecipe.ui.theme.MealRecipeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,10 +14,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MealRecipeTheme {
-                // A surface container using the 'background' color from the theme
-                HomeScreen(modifier = Modifier.fillMaxSize(), navigateToDetail = { /*TODO*/ }) {
-
-                }
+                MealApp(modifier = Modifier.fillMaxSize())
             }
         }
     }

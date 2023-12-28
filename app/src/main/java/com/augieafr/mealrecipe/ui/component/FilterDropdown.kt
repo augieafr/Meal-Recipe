@@ -2,6 +2,7 @@ package com.augieafr.mealrecipe.ui.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,19 +25,20 @@ fun FilterDropdown(
     modifier: Modifier = Modifier,
     currentMenu: String,
     filterType: FilterType,
-    listMenu: List<String>
+    listMenu: List<String>,
+    onItemMenuSelected: (String) -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(false) }
-    var selectedMenu by remember { mutableStateOf(currentMenu) }
     Column(modifier) {
         Text(text = filterType.wording, style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.size(8.dp))
         ExposedDropdownMenuBox(
+            modifier = Modifier.padding(bottom = 16.dp),
             expanded = isExpanded,
             onExpandedChange = { isExpanded = !isExpanded })
         {
             OutlinedTextField(
-                value = selectedMenu,
+                value = currentMenu,
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
@@ -49,7 +51,7 @@ fun FilterDropdown(
             ) {
                 listMenu.forEach { menu ->
                     DropdownMenuItem(text = { Text(text = menu) }, onClick = {
-                        selectedMenu = menu
+                        onItemMenuSelected(menu)
                         isExpanded = false
                     })
                 }

@@ -24,7 +24,7 @@ android {
         buildConfigField(
             "String",
             "BASE_URL",
-            "\"www.themealdb.com/api/json/v1/1/\""
+            "\"https://www.themealdb.com/api/json/v1/1/\""
         )
 
     }
@@ -77,6 +77,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.5.0")

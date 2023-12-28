@@ -16,7 +16,7 @@ class MealRepository @Inject constructor(
 ) {
     fun getFilteredMeal(area: String, category: String) = flow<ResultState<List<MealUiModel>>> {
         emit(ResultState.Loading())
-        val result = apiService.getFilteredMeal(area, category)
+        val result = apiService.getFilteredMeal(area = area, category = category)
         if (result.isSuccessful) {
             result.body()?.let { response ->
                 if (response.meals.isNullOrEmpty()) emit(ResultState.Error(MealException.EmptyResultException))

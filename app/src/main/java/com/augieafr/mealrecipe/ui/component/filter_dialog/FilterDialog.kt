@@ -16,6 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,14 +29,19 @@ import androidx.compose.ui.window.Dialog
 import com.augieafr.mealrecipe.R
 import com.augieafr.mealrecipe.ui.component.FilterDropdown
 import com.augieafr.mealrecipe.ui.component.FilterType
+import com.augieafr.mealrecipe.ui.loading_screen.LoadingScreen
 
 @Composable
 fun FilterDialog(
     onDismiss: () -> Unit,
     currentArea: String,
     currentCategory: String,
+    listCategory: List<String>,
     onSave: (area: String, category: String) -> Unit
 ) {
+    var area by remember { mutableStateOf(currentArea) }
+    var category by remember { mutableStateOf(currentCategory) }
+
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(18.dp),
@@ -40,24 +49,31 @@ fun FilterDialog(
         ) {
             Column {
                 FilterDialogHeader(onDismiss)
-                FilterDropdown(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    currentMenu = currentArea,
-                    filterType = FilterType.AREA,
-                    listMenu = listOf("Indonesia", "Japan", "China", "Korea")
-                )
-                FilterDropdown(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    currentMenu = currentCategory,
-                    filterType = FilterType.CATEGORY,
-                    listMenu = listOf("Beef", "Noodles")
-                )
-
-                FilterDialogFooter { area, category ->
-                    onSave(area, category)
-                    onDismiss()
+                if (listCategory.isNotEmpty()) {
+                    FilterDropdown(
+                        modifier = Modifier
+                            .padding(16.dp),
+                        currentMenu = area,
+                        filterType = FilterType.AREA,
+                        listMenu = listOf("American", "Canadian")
+                    ) {
+                        area = it
+                    }
+                    FilterDropdown(
+                        modifier = Modifier
+                            .padding(16.dp),
+                        currentMenu = category,
+                        filterType = FilterType.CATEGORY,
+                        listMenu = listOf("Beef", "Noodles")
+                    ) {
+                        category = it
+                    }
+                    FilterDialogFooter {
+                        onSave(area, category)
+                        onDismiss()
+                    }
+                } else {
+                    LoadingScreen(modifier = Modifier.fillMaxWidth())
                 }
             }
         }
@@ -86,14 +102,14 @@ private fun FilterDialogHeader(onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun FilterDialogFooter(onSave: (area: String, category: String) -> Unit) {
+private fun FilterDialogFooter(onSave: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(end = 16.dp, bottom = 16.dp),
         horizontalArrangement = Arrangement.End
     ) {
-        Button(modifier = Modifier.wrapContentSize(), onClick = { onSave("", "") }) {
+        Button(modifier = Modifier.wrapContentSize(), onClick = { onSave() }) {
             Text(
                 text = stringResource(id = R.string.save),
                 fontWeight = FontWeight.Bold

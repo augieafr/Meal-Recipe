@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.augieafr.mealrecipe.R
 import com.augieafr.mealrecipe.ui.component.filter_dialog.FilterDialog
 import com.augieafr.mealrecipe.ui.component.meal_app_bar.HomeAppBarActions
@@ -25,11 +28,11 @@ import com.augieafr.mealrecipe.ui.component.meal_app_bar.MealAppBar
 import com.augieafr.mealrecipe.ui.empty_screen.EmptyScreen
 import com.augieafr.mealrecipe.ui.error_screen.ErrorScreen
 import com.augieafr.mealrecipe.ui.loading_screen.LoadingScreen
-import com.augieafr.mealrecipe.ui.model.MealUiModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = viewModel(),
     navigateToDetail: (String) -> Unit,
     navigateToFavorite: () -> Unit,
 ) {
@@ -41,28 +44,18 @@ fun HomeScreen(
         mutableStateOf(false)
     }
 
-    val uiState: HomeScreenUiState by remember {
-        mutableStateOf(
-            HomeScreenUiState.MainContent(
-                listOf(
-                    MealUiModel(
-                        id = "52772",
-                        name = "Teriyaki Chicken Casserole",
-                        thumbUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
-                    ),
-                    MealUiModel(
-                        id = "52772",
-                        name = "Teriyaki Chicken Casserole ",
-                        thumbUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
-                    ),
-                    MealUiModel(
-                        id = "52772",
-                        name = "Teriyaki Chicken Casserole",
-                        thumbUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
-                    )
-                )
-            )
-        )
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val selectedArea by viewModel.selectedArea.collectAsStateWithLifecycle()
+    val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = selectedArea, key2 = selectedCategory, key3 = searchQuery) {
+        if (searchQuery.isEmpty()) {
+            viewModel.getFilteredMeal()
+        } else {
+            viewModel.searchMeal()
+        }
     }
 
     Scaffold(
@@ -73,7 +66,7 @@ fun HomeScreen(
                     modifier = Modifier.clickable { isShowFilterDialog = true },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "American Beef")
+                    Text(text = "$selectedArea $selectedCategory")
                     Spacer(modifier = Modifier.size(4.dp))
                     Icon(
                         modifier = Modifier
@@ -99,10 +92,13 @@ fun HomeScreen(
             .padding(paddingValues)
         if (isShowFilterDialog) {
             FilterDialog(
-                currentArea = "Area",
-                currentCategory = "Category",
+                currentArea = selectedArea,
+                currentCategory = selectedCategory,
                 onDismiss = { isShowFilterDialog = false },
-                onSave = { _, _ -> })
+                listCategory = viewModel.categories.collectAsStateWithLifecycle().value,
+                onSave = { area, category ->
+                    viewModel.setFilter(area, category)
+                })
         }
         when (uiState) {
             HomeScreenUiState.Empty -> EmptyScreen(modifier = screenModifier)

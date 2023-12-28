@@ -53,6 +53,13 @@ fun HomeScreen(
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = selectedArea, key2 = selectedCategory, key3 = searchQuery) {
+        // prevent called API again after navigate up from DetailMealScreen
+        // LaunchedEffect will get called again after navigate up because the screen removed from composition
+        if (viewModel.isScreenRemovedFromComposition) {
+            viewModel.isScreenRemovedFromComposition = false
+            return@LaunchedEffect
+        }
+
         if (searchQuery.isEmpty()) {
             viewModel.getFilteredMeal()
         } else {
@@ -65,38 +72,44 @@ fun HomeScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            MealAppBar(title = {
-                Row(
-                    modifier = Modifier.clickable {
-                        if (searchQuery.isEmpty()) isShowFilterDialog = true
-                    },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (searchQuery.isEmpty()) {
-                        Text(text = "$selectedArea $selectedCategory")
-                        Spacer(modifier = Modifier.size(4.dp))
-                        Icon(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .padding(top = 4.dp),
-                            painter = painterResource(id = R.drawable.baseline_filter_list_24),
-                            contentDescription = ""
-                        )
-                    } else Text(text = stringResource(id = R.string.search_result))
+            MealAppBar(
+                title = {
+                    Row(
+                        modifier = Modifier.clickable {
+                            if (searchQuery.isEmpty()) isShowFilterDialog = true
+                        },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (searchQuery.isEmpty()) {
+                            Text(text = "$selectedArea $selectedCategory")
+                            Spacer(modifier = Modifier.size(4.dp))
+                            Icon(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .padding(top = 4.dp),
+                                painter = painterResource(id = R.drawable.baseline_filter_list_24),
+                                contentDescription = ""
+                            )
+                        } else Text(text = stringResource(id = R.string.search_result))
 
+                    }
+                },
+                actions = {
+                    HomeAppBarActions(
+                        query = searchQuery,
+                        isSearchBarActive = isSearchBarActive,
+                        onSearchIconClicked = {
+                            isSearchBarActive = !isSearchBarActive
+                        },
+                        onQueryCleared = { viewModel.setQuery("") },
+                        onQueryChanged = { viewModel.setQuery(it) },
+                        navigateToFavorite = {
+                            viewModel.isScreenRemovedFromComposition = true
+                            navigateToFavorite()
+                        }
+                    )
                 }
-            }) {
-                HomeAppBarActions(
-                    query = searchQuery,
-                    isSearchBarActive = isSearchBarActive,
-                    onSearchIconClicked = {
-                        isSearchBarActive = !isSearchBarActive
-                    },
-                    onQueryCleared = { viewModel.setQuery("") },
-                    onQueryChanged = { viewModel.setQuery(it) },
-                    navigateToFavorite = navigateToFavorite
-                )
-            }
+            )
         }
     ) { paddingValues ->
         val screenModifier = Modifier
@@ -121,6 +134,7 @@ fun HomeScreen(
                     modifier = screenModifier,
                     mealList = (uiState as HomeScreenUiState.MainContent).data
                 ) { id ->
+                    viewModel.isScreenRemovedFromComposition = true
                     navigateToDetail(id)
                 }
             }

@@ -40,6 +40,8 @@ class HomeViewModel @Inject constructor(private val mealRepository: MealReposito
             _categories
         }
 
+    var isScreenRemovedFromComposition = false
+
     fun getFilteredMeal() = viewModelScope.launch {
         mealRepository.getFilteredMeal(
             area = _selectedArea.value,
@@ -81,7 +83,7 @@ class HomeViewModel @Inject constructor(private val mealRepository: MealReposito
         when (this) {
             is ResultState.Error -> _uiState.value =
                 if (this.throwable is MealException.EmptyResultException) HomeScreenUiState.Empty
-                else HomeScreenUiState.Error(this.throwable.message.toString())
+                else HomeScreenUiState.Error(this.throwable.message ?: "Unknown error")
 
             is ResultState.Loading -> _uiState.value = HomeScreenUiState.Loading
             is ResultState.Success -> _uiState.value = HomeScreenUiState.MainContent(this.data)

@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.augieafr.mealrecipe.ui.detail_screen.DetailMealScreen
 import com.augieafr.mealrecipe.ui.home_screen.HomeScreen
 import com.augieafr.mealrecipe.ui.navigation.Screen
 
@@ -43,7 +44,9 @@ fun MealApp(
                 })
             ) {
                 val mealId = it.arguments?.getString(Screen.DETAIL_MEAL_ID_KEY).orEmpty()
-                //TODO: add detail screen
+                DetailMealScreen(modifier = modifier, mealId = mealId) {
+                    navController.navigateUp()
+                }
             }
         })
 }

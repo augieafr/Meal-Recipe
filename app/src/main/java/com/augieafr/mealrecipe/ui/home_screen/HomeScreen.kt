@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.augieafr.mealrecipe.R
 import com.augieafr.mealrecipe.ui.component.filter_dialog.FilterDialog
 import com.augieafr.mealrecipe.ui.component.meal_app_bar.HomeAppBarActions
@@ -34,7 +34,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
     navigateToDetail: (String) -> Unit,
     navigateToFavorite: () -> Unit,
 ) {

@@ -61,9 +61,21 @@ class HomeViewModel @Inject constructor(private val mealRepository: MealReposito
         // TODO: IN PROGRESS
     }
 
-    fun getCategories() = viewModelScope.launch {
+    private fun getCategories() = viewModelScope.launch {
+        mealRepository.getCategories().collectLatest { result ->
+            when (result) {
+                is ResultState.Error -> {
+                    _uiState.value = HomeScreenUiState.Error(result.throwable.message.toString())
+                }
 
+                is ResultState.Loading -> {}
+                is ResultState.Success -> {
+                    _categories.value = result.data
+                }
+            }
+        }
     }
+
     fun setFilter(area: String, category: String) {
         _selectedArea.value = area
         _selectedCategory.value = category

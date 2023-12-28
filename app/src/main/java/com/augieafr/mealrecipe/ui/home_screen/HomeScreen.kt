@@ -47,17 +47,17 @@ fun HomeScreen(
                 listOf(
                     MealUiModel(
                         id = "52772",
-                        title = "Teriyaki Chicken Casserole",
+                        name = "Teriyaki Chicken Casserole",
                         thumbUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
                     ),
                     MealUiModel(
                         id = "52772",
-                        title = "Teriyaki Chicken Casserole ",
+                        name = "Teriyaki Chicken Casserole ",
                         thumbUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
                     ),
                     MealUiModel(
                         id = "52772",
-                        title = "Teriyaki Chicken Casserole",
+                        name = "Teriyaki Chicken Casserole",
                         thumbUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
                     )
                 )

@@ -20,7 +20,7 @@ fun HomeMainContent(
             with(mealList[index]) {
                 MealItem(
                     modifier = Modifier.padding(8.dp),
-                    title = title,
+                    title = name,
                     thumbUrl = thumbUrl,
                     onClick = { onItemClicked(id) }
                 )

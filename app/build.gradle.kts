@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
 
@@ -58,6 +58,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    hilt {
+        enableAggregatingTask = true
+    }
 }
 
 dependencies {
@@ -90,7 +93,7 @@ dependencies {
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.50")
-    kapt("com.google.dagger:hilt-compiler:2.50")
+    ksp("com.google.dagger:hilt-compiler:2.50")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
@@ -99,9 +102,11 @@ dependencies {
     // Youtube player
     implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
-}
+    // Room
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
-kapt {
-    correctErrorTypes = true
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
 }

@@ -1,4 +1,4 @@
-package com.augieafr.mealrecipe.data.model
+package com.augieafr.mealrecipe.data.model.response
 
 import com.google.gson.annotations.SerializedName
 

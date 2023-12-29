@@ -11,8 +11,8 @@
     <string name="search_by_name">Search by meal\'s name</string>
     <string name="search_result">Search result</string>
     <string name="detail_meal">Detail Meal</string>
-    <string name="ingredient">Ingredients :</string>
-    <string name="instructions">Instructions:</string>
+    <string name="ingredient">INGREDIENTS</string>
+    <string name="instructions">INSTRUCTIONS</string>
     <string name="no_bookmarked_meal">You have no bookmarked meal yet, let\'s bookmark one first!</string>
     <string name="bookmarked_meal">Bookmarked Meal</string>
 </resources>

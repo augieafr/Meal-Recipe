@@ -1,5 +1,6 @@
 package com.augieafr.mealrecipe.ui.detail_screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -56,12 +57,14 @@ private fun Instructions(instructions: String) {
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = stringResource(id = R.string.instructions),
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleMedium
-        )
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = stringResource(id = R.string.instructions),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
         Text(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
             text = instructions,
@@ -79,12 +82,14 @@ private fun Ingredients(ingredients: List<String>, measures: List<String>) {
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = stringResource(id = R.string.ingredient),
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleMedium
-        )
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = stringResource(id = R.string.ingredient),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
         Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
             ingredients.forEachIndexed { index, ingredient ->
                 Row {
